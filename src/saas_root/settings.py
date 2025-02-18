@@ -80,12 +80,18 @@ WSGI_APPLICATION = 'saas_root.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+
+DATABASE_URL= config("DATABASE_URL", cast=int, default=30)
+CON_MAX_AGE= config("CON_MAX_AGE", cast=str)
+
+
+if DATABASE_URL is not None:
+    import dj_database_url
+    DATABASES = {
+    'default':dj_database_url.config(default=DATABASE_URL,
+                                     conn_health_checks=True,conn_max_age=CON_MAX_AGE)
 }
+
 
 
 # Password validation
